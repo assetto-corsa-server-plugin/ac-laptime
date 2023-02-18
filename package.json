@@ -1,0 +1,16 @@
+{
+  "name": "ac-laptime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dgram": "^1.0.1",
+    "e": "^0.2.32",
+    "smart-buffer": "^4.2.0"
+  }
+}
