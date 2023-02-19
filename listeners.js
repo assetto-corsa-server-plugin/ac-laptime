@@ -10,7 +10,7 @@ class Listeners {
                 this.db.new_user(...data);
                 this.db.update_username(data[0], data[1]);
                 tools.sendChat(data[2], 'Welcome!', this.client);
-                tools.sendChat(data[2], `Your best laptime: ${tools.msToTime(db.get_userbest(data[1], data[3], this.db.track))}`, this.client);
+                tools.sendChat(data[2], `Your best laptime: ${tools.msToTime(this.db.get_userbest(data[1], data[3], this.db.track))}`, this.client);
                 tools.sendChat(data[2], 'Need help? Send /help', this.client);
             }
         };
@@ -49,11 +49,11 @@ class Listeners {
                         tools.sendChat(data[0], 'Commands: /help, /mybest, /trackbest', this.client);
                         break;
                     case 'mybest':
-                        var best = tools.msToTime(db.get_userbest(car.guid, car.model, this.db.track));
+                        var best = tools.msToTime(this.db.get_userbest(car.guid, car.model, this.db.track));
                         tools.sendChat(data[0], `Your best laptime with ${car.model}: ${best}`, this.client);
                         break;
                     case 'trackbest':
-                        var best = tools.msToTime(db.get_trackbest(car.model, this.db.track));
+                        var best = tools.msToTime(this.db.get_trackbest(car.model, this.db.track));
                         tools.sendChat(data[0], `Track best laptime with ${car.model}: ${best}`, this.client);
                 }
             }
