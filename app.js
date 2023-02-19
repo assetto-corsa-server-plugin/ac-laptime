@@ -32,16 +32,16 @@ client.on('message', (msg, info) => {
         for (var i = 0; i < q[1]; i++) {
             switch (save ? q[0] : q[0].slice(1)) {
                 case 'fle':
-                    if (save) data.push(buffer.readFloatLE());
+                    if (save) data.push(buf.readFloatLE());
                     break;
                 case 'uint32':
-                    if (save) data.push(buffer.readUInt32LE());
+                    if (save) data.push(buf.readUInt32LE());
                     break;
                 case 'uint16':
-                    if (save) data.push(buffer.readUInt16());
+                    if (save) data.push(buf.readUInt16());
                     break;
                 case 'uint8':
-                    if (save) data.push(buffer.readUInt8());
+                    if (save) data.push(buf.readUInt8());
                     break;
                 case 'strw':
                     if (save) data.push(br.readStringW(buf));
