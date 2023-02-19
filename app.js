@@ -30,7 +30,7 @@ client.on('message', (msg, info) => {
         if (q[0][0] !== 'B') {
             save = false;
         }
-        for (var i = 0; i < repeat; i++) {
+        for (var i = 0; i < q[1]; i++) {
             switch (save ? q[0] : q[0].slice(1)) {
                 case 'fle':
                     temp = buffer.readFloatLE();
@@ -54,6 +54,7 @@ client.on('message', (msg, info) => {
             if (save) data.push(temp);
         }
     }
+    console.log(data);
     command.execute(data);
 });
 client.bind(12001);
