@@ -21,37 +21,35 @@ client.on('message', (msg, info) => {
     const query = command.query;
     var data = [];
     var save;
-    var temp;
     for (var q of query) {
         save = true;
         if (typeof q === 'string') {
             q = [q, 1]
         }
-        if (q[0][0] !== 'B') {
+        if (q[0][0] === 'B') {
             save = false;
         }
         for (var i = 0; i < q[1]; i++) {
             switch (save ? q[0] : q[0].slice(1)) {
                 case 'fle':
-                    temp = buffer.readFloatLE();
+                    if (save) data.push(buffer.readFloatLE());
                     break;
                 case 'uint32':
-                    temp = buffer.readUInt32LE();
+                    if (save) data.push(buffer.readUInt32LE());
                     break;
                 case 'uint16':
-                    temp = buffer.readUInt16();
+                    if (save) data.push(buffer.readUInt16());
                     break;
                 case 'uint8':
-                    temp = buffer.readUInt8();
+                    if (save) data.push(buffer.readUInt8());
                     break;
                 case 'strw':
-                    temp = br.readStringW(buf);
+                    if (save) data.push(br.readStringW(buf));
                     break;
                 case 'str':
-                    temp = br.readString(buf);
+                    if (save) data.push(br.readString(buf));
                     break;
             }
-            if (save) data.push(temp);
         }
     }
     console.log(data);
