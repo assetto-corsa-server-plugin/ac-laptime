@@ -49,7 +49,7 @@ class Listeners {
                         tools.sendChat(data[0], 'Commands: /help, /mybest, /trackbest', this.client);
                         break;
                     case 'mybest':
-                        var best = tools.msToTime(this.db.get_userbest(car.guid, car.model, this.db.track));
+                        var best = tools.msToTime(this.db.get_personalbest(car.guid, car.model, this.db.track));
                         tools.sendChat(data[0], `Your best laptime with ${car.model}: ${best}`, this.client);
                         break;
                     case 'trackbest':
