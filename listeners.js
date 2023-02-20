@@ -10,7 +10,7 @@ class Listeners {
                 this.db.new_user(...data);
                 this.db.update_username(data[0], data[1]);
                 tools.sendChat(data[2], 'Welcome!', this.client);
-                tools.sendChat(data[2], `Your best laptime: ${tools.msToTime(this.db.get_userbest(data[1], data[3], this.db.track))}`, this.client);
+                tools.sendChat(data[2], `Your best laptime: ${tools.msToTime(this.db.get_personalbest(data[1], data[3], this.db.track))}`, this.client);
                 tools.sendChat(data[2], 'Need help? Send /help', this.client);
             }
         };
