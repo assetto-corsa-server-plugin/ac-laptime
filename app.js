@@ -56,3 +56,8 @@ client.on('message', (msg, info) => {
     command.execute(data);
 });
 client.bind(12001);
+
+var packet = buffer.fromSize(3);
+packet.writeUInt8(protocols.GET_SESSION_INFO);
+packet.writeInt16LE(-1);
+client.send(packet.toBuffer(), 12000, '127.0.0.1');

@@ -58,6 +58,10 @@ class Listeners {
                 }
             }
         }
+        commands[protocols.NEW_SESSION] = {
+            query: commands[protocols.SESSION_INFO].query,
+            execute: commands[protocols.SESSION_INFO].execute
+        }
         commands[protocols.SESSION_INFO] = {
             query: [['Buint8', 4], 'strw'],
             execute: (data) => {
