@@ -26,12 +26,12 @@ class Listeners {
                 if (data[2] !== 0) return;
                 const car = this.db.get_car(data[0]);
                 const personalBest = this.db.get_personalbest(car.guid, car.model, this.db.track);
-                if (data[1] > personalBest) {
+                if (data[1] > personalBest || personalBest === 0) {
                     tools.sendChat(data[0], `You broke your best record!\n${tools.msToTime(data[1])}`, this.client);
                     this.db.update_personalbest(car, data[1], this.db.track);
                 }
                 const trackBest = this.db.get_trackbest(car.model, this.db.track);
-                if (data[1] > trackBest) {
+                if (data[1] > trackBest || trackBest === 0) {
                     tools.sendChat(data[0], `You are the fastest with ${car.model}!\n${tools.msToTime(data[1])}`, this.client);
                     tools.broadcastChat(data[0], `${car.username} is the fastest with ${car.model}!\n${tools.msToTime(data[1])}`, this.client);
                     this.db.update_trackbest(car, data[1], this.db.track);
