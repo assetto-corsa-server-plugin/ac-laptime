@@ -1,17 +1,18 @@
 const udp = require('dgram');
 const buffer = require('smart-buffer').SmartBuffer;
+const fs = require('fs');
+const ini = require('ini');
 const tool = require('./tools');
 const listeners = require('./listeners');
-var db = require('./db').DB;
 const protocols = require('./protocols');
+const db = new (require('./db')).DB();
 
 const br = new tool.byteReader();
 const client = udp.createSocket('udp4');
+const server_cfg = ini.parse(fs.readFileSync('../server/cfg/server_cfg.ini', 'utf-8'));
 
-var db = new db();
-
+db.init(server_cfg.MAX_CLIENTS, server_cfg.TRACK);
 listeners.init(db, client);
-
 
 client.on('message', (msg, info) => {
     const buf = buffer.fromBuffer(msg);
@@ -52,14 +53,6 @@ client.on('message', (msg, info) => {
             }
         }
     }
-    console.log(data);
     command.execute(data);
 });
 client.bind(12001);
-
-for (var i = 0; i < 32; i++) {
-    packet = buffer.fromSize(2)
-    packet.writeUInt8(protocols.GET_CAR_INFO);
-    packet.writeUInt8(i);
-    client.send(packet.toBuffer(), 12000, '127.0.0.1');
-}

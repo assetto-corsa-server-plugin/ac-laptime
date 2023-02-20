@@ -1,47 +1,48 @@
 class Database {
-    constructor () {
+    init (max_cars, track) {
+        this.track = track;
         this.cars = {};
+        for (var i = 0; i < max_cars; i++) {
+            this.reset_car(i);
+        }
     }
     set (key, value) {
         this[key] = value;
     }
-    new_user (username, guid, car_id, model) {
+    reset_car (car_id) {
+        this.cars[car_id] = {model: undefined, best: undefined, username: undefined, guid: undefined}
+    }
+    update_car (username, guid, car_id, model) {
+        const best = 0; // get data from db server
         this.cars[car_id] = {
             guid: guid,
             username: username,
-            model: model
+            model: model,
+            best: best
         }
+        // send the most recent username to the server
+    }
+    update_trackbest (car_id, laptime) {
+        const user = this.cars[car_id];
+        this.trackbest[user.model] = {
+            laptime: laptime,
+            guid: user.guid
+        }
+        // send data to db server 
+    }
+    update_personalbest (car_id, laptime) {
+        this.cars[car_id].best = laptime;
+        // send data to db server
     }
     get_car (car_id) {
         return this.cars[car_id];
     }
-    remove_car (car_id) {
-        this.cars[car_id] = null;
+    get_personalbest (car_id) {
+        return this.cars[car_id].best;
     }
-    update_trackbest (car, laptime, track) {
-        this.trackbest = {
-            laptime: laptime,
-            user_guid: car.guid
-        }
+    get_trackbest (car_id) {
+        return this.trackbest[this.cars[car_id].model].laptime;
     }
-    update_personalbest (car, laptime, track) {
-        this.personalbest[car.guid][car.model] = laptime;
-    }
-    get_personalbest (guid, model, track) {
-        try {
-            return this.personalbest[guid][model];
-        } catch (e) {
-            return 0;
-        }
-    }
-    get_trackbest (model, track) {
-        try {
-            return this.trackbest.laptime;
-        } catch (e) {
-            return 0;
-        }
-    }
-    update_username (guid, name) {}
 }
 
 module.exports = {
