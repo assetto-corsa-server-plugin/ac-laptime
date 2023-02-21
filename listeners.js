@@ -57,11 +57,7 @@ class Listeners {
                         tools.sendChat(data[0], `Track best laptime with ${car.model}: ${best}`, this.client);
                 }
             }
-        }
-        commands[protocols.NEW_SESSION] = {
-            query: commands[protocols.SESSION_INFO].query,
-            execute: commands[protocols.SESSION_INFO].execute
-        }
+        };
         commands[protocols.SESSION_INFO] = {
             query: [['Buint8', 4], 'strw'],
             execute: (data) => {
@@ -75,12 +71,16 @@ class Listeners {
                 }
             }
         };
+        commands[protocols.NEW_SESSION] = {
+            query: commands[protocols.SESSION_INFO].query,
+            execute: commands[protocols.SESSION_INFO].execute
+        };
         commands[protocols.CAR_INFO] = {
             query: [['uint8', 2], 'strw', 'Bstrw', 'strw', 'Bstrw', 'strw'],
             execute: (data) => {
                 if (data[1] === 1) this.db.update_car(data[3], data[4], data[0], data[2]);
             }
-        }
+        };
         this.commands = commands;
     };
     init (db, client) {
