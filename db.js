@@ -9,6 +9,7 @@ class Database {
         this.connection.query('CREATE TABLE IF NOT EXISTS trackbest(guid CHAR(17), laptime INT, model CHAR(15), track CHAR(30))');
         this.connection.query('CREATE TABLE IF NOT EXISTS username(guid CHAR(17), username CHAR(30))');
         this.track = track;
+        this.trackbest = {};
         this.max_cars = max_cars
         this.cars = {};
         for (var i = 0; i < max_cars; i++) {
