@@ -9,9 +9,14 @@ class Listeners {
             query: [['strw', 2], 'uint8', 'str'],
             execute: (data) => {
                 this.db.update_car(...data);
-                tools.sendChat(data[2], 'Welcome!', this.client);
-                tools.sendChat(data[2], `Your best laptime: ${tools.msToTime(this.db.get_personalbest(data[2]))}`, this.client);
-                tools.sendChat(data[2], 'Need help? Send !help', this.client);
+            }
+        }
+        commands[protocols.CLIENT_LOADED] = {
+            query: ['uint8'],
+            execute: (data) => {
+                tools.sendChat(data[0], 'Welcome!', this.client);
+                tools.sendChat(data[0], `Your best laptime: ${tools.msToTime(this.db.get_personalbest(data[0]))}`, this.client);
+                tools.sendChat(data[0], 'Need help? Send !help', this.client);
             }
         };
         commands[protocols.CONNECTION_CLOSED] = {
@@ -76,7 +81,7 @@ class Listeners {
             execute: commands[protocols.SESSION_INFO].execute
         };
         commands[protocols.CAR_INFO] = {
-            query: [['uint8', 2], 'strw', 'Bstrw', 'strw', 'Bstrw', 'strw'],
+            query: [['uint8', 2], 'Bstrw', ['strw', 2], 'Bstrw', 'strw'],
             execute: (data) => {
                 if (data[1] === 1) this.db.update_car(data[3], data[4], data[0], data[2]);
             }
