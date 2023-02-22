@@ -18,7 +18,7 @@ class Database {
         this[key] = value;
     }
     reset_car (car_id) {
-        this.get_car(car_id) = {model: undefined, best: undefined, username: undefined, guid: undefined}
+        this.cars[car_id] = {model: undefined, best: undefined, username: undefined, guid: undefined}
     }
     update_car (username, guid, car_id, model) {
         this.connection.query(`SELECT laptime FROM personalbest WHERE guid=${guid}, model=${model}, track=${this.track}`, (error, results) => {
