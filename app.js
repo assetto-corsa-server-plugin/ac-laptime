@@ -11,7 +11,7 @@ const br = new tool.byteReader();
 const client = udp.createSocket('udp4');
 const server_cfg = ini.parse(fs.readFileSync('../server/cfg/server_cfg.ini', 'utf-8'));
 
-db.init(server_cfg.MAX_CLIENTS, server_cfg.TRACK);
+db.init(server_cfg.SERVER.MAX_CLIENTS, server_cfg.SERVER.TRACK);
 listeners.init(db, client);
 
 client.on('message', (msg, info) => {
