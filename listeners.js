@@ -33,7 +33,7 @@ class Listeners {
                 const trackBest = this.db.get_trackbest(data[0]);
                 if (data[1] > trackBest || trackBest === 0) {
                     tools.sendChat(data[0], `You are the fastest with ${car.model}!\n${tools.msToTime(data[1])}`, this.client);
-                    tools.broadcastChat(data[0], `${car.username} is the fastest with ${car.model}!\n${tools.msToTime(data[1])}`, this.client);
+                    tools.broadcastChat(`${car.username} is the fastest with ${car.model}!\n${tools.msToTime(data[1])}`, this.client);
                     this.db.update_trackbest(data[0], data[1]);
                 }
             }
