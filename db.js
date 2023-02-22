@@ -41,7 +41,7 @@ class Database {
     }
     update_trackbest (car_id, laptime) {
         const car = this.get_car(car_id);
-        this.trackbest[user.model] = {
+        this.trackbest[car.model] = {
             laptime: laptime,
             guid: car.guid
         }
