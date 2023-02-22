@@ -33,7 +33,7 @@ module.exports = {
     },
     addZero: function (number, count) {
         number = String(number);
-        return '0'.repeat(count - number.length) + number;
+        return '0'.repeat(Number(count) - number.length) + number;
     },
     broadcastChat: function(text, client) {
         const temp = br.writeStringW(text);
