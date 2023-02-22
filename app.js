@@ -18,7 +18,7 @@ client.on('message', (msg, info) => {
     const buf = buffer.fromBuffer(msg);
     const command = listeners.get(buf.readUInt8());
     if (command === undefined) return;
-    console.log(buf)
+    // console.log(buf);
     const query = command.query;
     var data = [];
     var save;

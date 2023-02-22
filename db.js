@@ -23,7 +23,7 @@ class Database {
     }
     update_car (username, guid, car_id, model) {
         this.connection.query(`SELECT laptime FROM personalbest WHERE guid=${guid}, model=${model}, track=${this.track}`, (error, results) => {
-            this.get_car(car_id) = {
+            this.cars[car_id] = {
                 guid: guid,
                 username: username,
                 model: model,
@@ -39,21 +39,22 @@ class Database {
         });
     }
     update_trackbest (car_id, laptime) {
-        const user = this.get_car(car_id);
+        const car = this.get_car(car_id);
         this.trackbest[user.model] = {
             laptime: laptime,
-            guid: user.guid
+            guid: car.guid
         }
-        this.connection.query(`SELECT * FROM trackbest WHERE track=${this.track}, model=${user.model}`, (error, results) => {
-            if (results !== undefined) this.connection.query(`UPDATE trackbest SET guid=${guid}, laptime=${laptime} WHERE track=${this.track}, model=${user.model}`, (error, results) => {});
-            else this.connection.query(`INSERT INTO trackbest (guid, laptime, track, model) VALUES(${guid}, ${laptime}, ${this.track}, ${user.model})`, (error, results) => {});
+        this.connection.query(`SELECT * FROM trackbest WHERE track=${this.track}, model=${car.model}`, (error, results) => {
+            if (results !== undefined) this.connection.query(`UPDATE trackbest SET guid=${car.guid}, laptime=${laptime} WHERE track=${this.track}, model=${car.model}`, (error, results) => {});
+            else this.connection.query(`INSERT INTO trackbest (guid, laptime, track, model) VALUES(${car.guid}, ${laptime}, ${this.track}, ${car.model})`, (error, results) => {});
         });
     }
     update_personalbest (car_id, laptime) {
-        this.get_car(car_id).best = laptime;
-        this.connection.query(`SELECT * FROM personalbest WHERE track=${this.track}, model=${user.model}, guid=${guid}`, (error, results) => {
-            if (results !== undefined) this.connection.query(`UPDATE personalbest SET laptime=${laptime} WHERE guid=${guid}, track=${this.track}, model=${user.model}`, (error, results) => {});
-            else this.connection.query(`INSERT INTO trackbest (guid, laptime, track, model) VALUES(${guid}, ${laptime}, ${this.track}, ${user.model})`, (error, results) => {});
+        const car = this.get_car(car_id);
+        this.cars[car_id].best = laptime;
+        this.connection.query(`SELECT * FROM personalbest WHERE track=${this.track}, model=${car.model}, guid=${car.guid}`, (error, results) => {
+            if (results !== undefined) this.connection.query(`UPDATE personalbest SET laptime=${laptime} WHERE guid=${car.guid}, track=${this.track}, model=${car.model}`, (error, results) => {});
+            else this.connection.query(`INSERT INTO trackbest (guid, laptime, track, model) VALUES(${car.guid}, ${laptime}, ${this.track}, ${car.model})`, (error, results) => {});
         });
     }
     get_car (car_id) {
@@ -63,7 +64,7 @@ class Database {
         return this.get_car(car_id).best;
     }
     get_trackbest (car_id) {
-        return this.trackbest[this.get_car(car_id).model].laptime;
+        return (this.trackbest[this.get_car(car_id).model] || {laptime: 0}).laptime;
     }
 }
 
