@@ -2,18 +2,18 @@ const mysql = require('mysql');
 const mysql_config = require('./mysql_config');
 
 class Database {
-    init (max_cars, track, callback) {
+    init (max_cars, track) {
         this.connection = mysql.createConnection(mysql_config);
         this.connection.connect();
         this.connection.query('CREATE TABLE IF NOT EXISTS personalbest(guid CHAR(17), laptime INT, model CHAR(15), track CHAR(30))');
         this.connection.query('CREATE TABLE IF NOT EXISTS trackbest(guid CHAR(17), laptime INT, model CHAR(15), track CHAR(30))');
         this.connection.query('CREATE TABLE IF NOT EXISTS username(guid CHAR(17), username CHAR(30))');
         this.track = track;
+        this.max_cars = max_cars
         this.cars = {};
         for (var i = 0; i < max_cars; i++) {
             this.reset_car(i);
         }
-        callback();
     }
     set (key, value) {
         this[key] = value;

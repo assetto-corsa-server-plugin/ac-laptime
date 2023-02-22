@@ -63,7 +63,7 @@ class Listeners {
             execute: (data) => {
                 this.db.set('server_name', data[0]);
                 var packet;
-                for (var i = 0; i < this.db.cars.length; i++) {
+                for (var i = 0; i < this.db.max_cars; i++) {
                     packet = buffer.fromSize(2)
                     packet.writeUInt8(protocols.GET_CAR_INFO);
                     packet.writeUInt8(i);
