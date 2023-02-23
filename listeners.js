@@ -51,15 +51,18 @@ class Listeners {
                 const car = this.db.get_car(data[0]);
                 switch (cmd) {
                     case 'help':
-                        tools.sendChat(data[0], 'Commands: /help, /mybest, /trackbest', this.client);
+                        tools.sendChat(data[0], 'Commands: !help, !mybest, !trackbest', this.client);
                         break;
                     case 'mybest':
-                        var best = tools.msToTime(this.db.get_personalbest(data[0]));
-                        tools.sendChat(data[0], `Your best laptime with ${car.model}: ${best}`, this.client);
+                        const best = this.db.get_personalbest(data[0]);
+                        if (best === 0) tools.sendChat(data[0], `You haven't set your record yet with ${car.model}`, this.client);
+                        else tools.sendChat(data[0], `Your best laptime with ${car.model}: ${tools.msToTime()}`, this.client);
                         break;
                     case 'trackbest':
-                        var best = tools.msToTime(this.db.get_trackbest(data[0]));
-                        tools.sendChat(data[0], `Track best laptime with ${car.model}: ${best}`, this.client);
+                        const trackbest = this.db.get_trackbest(data[0]);
+                        if (trackbest === 0) tools.sendChat(data[0], `Anyone hasn't set a record yet with ${car.model}`);
+                        else tools.sendChat(data[0], `Track best laptime with ${car.model}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`, this.client);
+                        break;
                 }
             }
         };
@@ -87,7 +90,7 @@ class Listeners {
             }
         };
         this.commands = commands;
-    };
+    }
     init (db, client) {
         this.db = db;
         this.client = client;
