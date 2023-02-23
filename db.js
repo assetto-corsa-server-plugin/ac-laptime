@@ -53,7 +53,7 @@ class Database {
     update_personalbest (car_id, laptime) {
         const car = this.get_car(car_id);
         this.cars[car_id].best = laptime;
-        this.connection.query(`SELECT * FROM personalbest WHERE track=${this.track} AND model=${car.model} AND guid=${car.guid}`, (error, results) => {
+        this.connection.query(`SELECT * FROM personalbest WHERE track='${this.track}' AND model='${car.model}' AND guid=${car.guid}`, (error, results) => {
             if (results.length > 0) this.connection.query(`UPDATE personalbest SET guid=${car.guid} AND laptime=${laptime} WHERE track='${this.track}' AND model='${car.model}'`, (error, results) => {});
             else this.connection.query(`INSERT INTO trackbest (guid, laptime, track, model) VALUES(${car.guid}, ${laptime}, '${this.track}', '${car.model}')`, (error, results) => {});
         });
