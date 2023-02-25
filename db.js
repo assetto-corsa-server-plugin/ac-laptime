@@ -20,7 +20,7 @@ class Database {
     update_car (username, guid, car_id, model) {
         if (this.trackbest[model] === undefined) {
             request.get({url: config.db.host + '/trackbest', qs: {track: this.track, model: model}}, (err, res, body) => {
-                this.trackbest[model] = res === undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined;
+                this.trackbest[model] = res !== undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined;
             });
         }
         request.get({url: config.db.host + '/personalbest', qs: {track: this.track, model: model, guid: guid}}, (err, res, body) => {
