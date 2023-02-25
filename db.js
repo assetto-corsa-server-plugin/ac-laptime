@@ -1,4 +1,4 @@
-const config = require('config');
+const config = require('./config');
 const request = require('request');
 
 class Database {
