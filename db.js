@@ -32,7 +32,7 @@ class Database {
         httpRequest.post(`/username?guid=${guid}`, {username: username});
         if (this.trackbest[model] === undefined) {
             httpRequest.get(`/trackbest?track=${this.track}&model=${model}`, (res) => {
-                if (res !== {}) this.update_trackbest_var(model, {guid: res.guid, username: res.username, laptime: res.laptime});
+                if (res.length > 0) this.update_trackbest_var(model, {guid: res.guid, username: res.username, laptime: res.laptime});
             })
         }
         httpRequest.get(`/personalbest?track=${this.track}&model=${model}&guid=${guid}`, (res) => {
