@@ -35,16 +35,16 @@ client.on('message', (msg, info) => {
         for (var i = 0; i < q[1]; i++) {
             switch (save ? q[0] : q[0].slice(1)) {
                 case 'fle':
-                    temp = buffer.readFloatLE();
+                    temp = buf.readFloatLE();
                     break;
                 case 'uint32':
-                    temp = buffer.readUInt32LE();
+                    temp = buf.readUInt32LE();
                     break;
                 case 'uint16':
-                    temp = buffer.readUInt16();
+                    temp = buf.readUInt16();
                     break;
                 case 'uint8':
-                    temp = buffer.readUInt8();
+                    temp = buf.readUInt8();
                     break;
                 case 'strw':
                     temp = br.readStringW(buf);
