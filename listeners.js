@@ -56,11 +56,11 @@ class Listeners {
                     case 'mybest':
                         const best = this.db.get_personalbest(data[0]);
                         if (best === 0) tools.sendChat(data[0], `You haven't set your record yet with ${car.model}`, this.client);
-                        else tools.sendChat(data[0], `Your best laptime with ${car.model}: ${tools.msToTime()}`, this.client);
+                        else tools.sendChat(data[0], `Your best laptime with ${car.model}: ${tools.msToTime(best)}`, this.client);
                         break;
                     case 'trackbest':
                         const trackbest = this.db.get_trackbest(data[0]);
-                        if (trackbest === undefined) tools.sendChat(data[0], `Anyone hasn't set a record yet with ${car.model}`);
+                        if (trackbest === 0) tools.sendChat(data[0], `Anyone hasn't set a record yet with ${car.model}`);
                         else tools.sendChat(data[0], `Track best laptime with ${car.model}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`, this.client);
                         break;
                 }
