@@ -60,7 +60,7 @@ class Listeners {
                         break;
                     case 'trackbest':
                         const trackbest = this.db.get_trackbest(data[0]);
-                        if (trackbest === 0) tools.sendChat(data[0], `Anyone hasn't set a record yet with ${car.model}`);
+                        if (trackbest === undefined) tools.sendChat(data[0], `Anyone hasn't set a record yet with ${car.model}`);
                         else tools.sendChat(data[0], `Track best laptime with ${car.model}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`, this.client);
                         break;
                 }
