@@ -50,7 +50,7 @@ class Database {
     update_personalbest (car_id, laptime) {
         const car = this.get_car(car_id);
         this.cars[car_id].best = laptime;
-        httpRequest.post(`/personalbest?track=${this.track}&model=${car.model}`, {laptime: laptime, guid: guid});
+        httpRequest.post(`/personalbest?track=${this.track}&model=${car.model}`, {laptime: laptime, guid: car.guid});
     }
     get_car (car_id) {
         return this.cars[String(car_id)];
