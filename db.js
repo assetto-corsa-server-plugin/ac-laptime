@@ -17,20 +17,26 @@ class Database {
     reset_car (car_id) {
         this.cars[car_id] = {model: undefined, best: undefined, username: undefined, guid: undefined};
     }
+    update_trackbest_var (model, data) {
+        this.trackbest[model] = data;
+    }
+    update_car_var (car_id, guid, username, model, res) {
+        this.cars[car_id] = {
+            guid: guid,
+            username: username,
+            model: model,
+            best: res !== undefined ? res.laptime : 0
+        };
+    }
     update_car (username, guid, car_id, model) {
         httpRequest.post(`/username?guid=${guid}`, {username: username}, () => {});
         if (this.trackbest[model] === undefined) {
             httpRequest.get(`/trackbest?track=${this.track}&model=${model}`, (res) => {
-                this.trackbest[model] = res !== undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined;
+                this.update_trackbest_var(model, res !== undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined);
             })
         }
         httpRequest.get(`/personalbest?track=${this.track}&model=${model}&guid=${guid}`, (res) => {
-            this.cars[car_id] = {
-                guid: guid,
-                username: username,
-                model: model,
-                best: res !== undefined ? res.laptime : 0
-            };
+            this.update_car_var(car_id, guid, username, model, res);
         });
     }
     update_trackbest (car_id, laptime) {
