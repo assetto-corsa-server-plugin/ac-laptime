@@ -1,5 +1,5 @@
 const config = require('./config');
-const request = require('request');
+const httpRequest = require('./tools').httpRequest;
 
 class Database {
     init (max_cars, track) {
@@ -19,19 +19,19 @@ class Database {
     }
     update_car (username, guid, car_id, model) {
         if (this.trackbest[model] === undefined) {
-            request.get({url: config.db.host + '/trackbest', qs: {track: this.track, model: model}}, (err, res, body) => {
+            httpRequest.get(`/trackbest?track=${this.track}&model=${model}`, (res) => {
                 this.trackbest[model] = res !== undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined;
-            });
+            })
         }
-        request.get({url: config.db.host + '/personalbest', qs: {track: this.track, model: model, guid: guid}}, (err, res, body) => {
+        httpRequest.get(`/personalbest?track=${this.track}&model=${model}&guid=${guid}`, (res) => {
             this.cars[car_id] = {
                 guid: guid,
                 username: username,
                 model: model,
-                best: res.laptime
+                best: res !== undefined ? res.laptime : 0
             };
         });
-        request.post({url: config.db.host + '/username', method: 'POST', qs: {guid: guid}, body: {username: username}}, (err, res, body) => {});
+        httpRequest.post(`/username?guid=${guid}`, {username: username}, () => {});
     }
     update_trackbest (car_id, laptime) {
         const car = this.get_car(car_id);
@@ -39,12 +39,12 @@ class Database {
             laptime: laptime,
             guid: car.guid
         };
-        request.post({url: config.db.host + '/trackbest', method: 'POST', qs: {track: this.track, model: car.model, guid: guid}, body: {laptime: laptime}}, (err, res, body) => {});
+        httpRequest.post(`/trackbest?track=${this.track}&model=${model}&guid=${guid}`, {laptime: laptime}, () => {});
     }
     update_personalbest (car_id, laptime) {
         const car = this.get_car(car_id);
         this.cars[car_id].best = laptime;
-        request.post({url: config.db.host + '/personalbest', method: 'POST', qs: {track: this.track, model: car.model}, body: {laptime: laptime, guid: guid}}, (err, res, body) => {});
+        httpRequest.post(`/personalbest?track=${this.track}&model=${model}`, {laptime: laptime, guid: guid}, () => {});
     }
     get_car (car_id) {
         return this.cars[String(car_id)];

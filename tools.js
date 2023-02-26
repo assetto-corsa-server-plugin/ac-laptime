@@ -2,6 +2,7 @@ const buffer = require('smart-buffer').SmartBuffer;
 const fs = require('fs');
 const config = require('./config');
 const protocols = require('./protocols');
+const http = require('http');
 
 class byteReader {
     readString (buf, offset=0) {
@@ -62,5 +63,37 @@ module.exports = {
         }
         return data;
     },
-    byteReader: byteReader
+    byteReader: byteReader,
+    httpRequest: {
+        post: (url, data, callback) => {
+            var options = {}
+            const postData = JSON.stringify(data);
+            options.hostname = config.db.host;
+            options.port = config.db.port;
+            options.path = url;
+            options.method = 'POST';
+            options.headers = {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData),
+            };
+            const req = http.request(options, (res) => {
+                res.on('data', (data) => callback(data));
+            });
+            req.write(postData);
+            req.end();
+        },
+        get: (url, callback) => {
+            var options = {}
+            options.hostname = config.db.host;
+            options.port = config.db.port;
+            options.path = url;
+            options.method = 'GET';
+            options.headers = {
+                'Content-Type': 'application/json'
+            };
+            http.get(options, (res) => {
+                res.on('data', (data) => callback(data));
+            });
+        },
+    }
 }
