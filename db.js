@@ -29,7 +29,7 @@ class Database {
         };
     }
     update_car (username, guid, car_id, model) {
-        httpRequest.post(`/username?guid=${guid}`, {username: username}, () => {});
+        httpRequest.post(`/username?guid=${guid}`, {username: username});
         if (this.trackbest[model] === undefined) {
             httpRequest.get(`/trackbest?track=${this.track}&model=${model}`, (res) => {
                 this.update_trackbest_var(model, res !== undefined ? {guid: res.guid, username: res.username, laptime: res.laptime} : undefined);
@@ -45,12 +45,12 @@ class Database {
             laptime: laptime,
             guid: car.guid
         };
-        httpRequest.post(`/trackbest?track=${this.track}&model=${model}&guid=${guid}`, {laptime: laptime}, () => {});
+        httpRequest.post(`/trackbest?track=${this.track}&model=${model}&guid=${guid}`, {laptime: laptime});
     }
     update_personalbest (car_id, laptime) {
         const car = this.get_car(car_id);
         this.cars[car_id].best = laptime;
-        httpRequest.post(`/personalbest?track=${this.track}&model=${model}`, {laptime: laptime, guid: guid}, () => {});
+        httpRequest.post(`/personalbest?track=${this.track}&model=${model}`, {laptime: laptime, guid: guid});
     }
     get_car (car_id) {
         return this.cars[String(car_id)];

@@ -66,7 +66,7 @@ module.exports = {
     },
     byteReader: byteReader,
     httpRequest: {
-        post: (url, data, callback) => {
+        post: (url, data) => {
             var options = {}
             const postData = JSON.stringify(data);
             options.hostname = config.db.host;
@@ -77,9 +77,7 @@ module.exports = {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(postData),
             };
-            const req = http.request(options, (res) => {
-                res.on('data', (data) => callback(data));
-            });
+            const req = http.request(options, (res) => {});
             req.write(postData);
             req.end();
         },
@@ -93,7 +91,12 @@ module.exports = {
                 'Content-Type': 'application/json'
             };
             http.get(options, (res) => {
-                res.on('data', (data) => callback(data));
+                const chunks = [];
+                res.on('data', (data) => chunks.push(data));
+                res.on('end', () => {
+                    const data = JSON.parse(Buffer.concat(chunks).toString());
+                    callback(data);
+                })
             });
         },
     }
