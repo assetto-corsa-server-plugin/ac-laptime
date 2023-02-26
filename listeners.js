@@ -84,7 +84,7 @@ class Listeners {
             execute: commands[protocols.SESSION_INFO].execute
         };
         commands[protocols.CAR_INFO] = {
-            query: [['uint8', 2], 'Bstrw', ['strw', 2], 'Bstrw', 'strw'],
+            query: [['uint8', 2], 'strw', 'Bstrw', 'strw', 'Bstrw', 'strw'],
             execute: (data) => {
                 if (data[1] === 1) this.db.update_car(data[3], data[4], data[0], data[2]);
             }
