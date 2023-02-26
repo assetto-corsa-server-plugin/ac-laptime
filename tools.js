@@ -94,7 +94,8 @@ module.exports = {
                 const chunks = [];
                 res.on('data', (data) => chunks.push(data));
                 res.on('end', () => {
-                    const data = JSON.parse(Buffer.concat(chunks).toString());
+                    const jsondata = Buffer.concat(chunks).toString();
+                    const data = JSON.parse(jsondata === '' ? '{}' : jsondata);
                     callback(data);
                 })
             });
