@@ -24,6 +24,7 @@ const br = new byteReader();
 
 module.exports = {
     msToTime: function (time) {
+        time = time || 0;
         const ms = time % 1000;
         time -= ms
         time /= 1000;
