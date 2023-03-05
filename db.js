@@ -36,7 +36,8 @@ class Database {
         const car = this.get_car(car_id);
         this.trackbest[car.model] = {
             laptime: laptime,
-            guid: car.guid
+            guid: car.guid,
+            username: car.username
         };
         httpRequest.post(`/trackbest?track=${this.track}&model=${car.model}`, {guid: car.guid, laptime: laptime});
     }
