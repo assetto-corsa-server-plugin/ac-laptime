@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "acserver-plugin": "^1.1.1",
     "dgram": "^1.0.1",
     "e": "^0.2.32",
     "ini": "^3.0.1",

@@ -1,4 +1,3 @@
-const config = require('./config');
 const httpRequest = require('./tools').httpRequest;
 
 class Database {
@@ -17,26 +16,20 @@ class Database {
     reset_car (car_id) {
         this.cars[car_id] = {model: undefined, best: undefined, username: undefined, guid: undefined};
     }
-    update_trackbest_var (model, data) {
-        this.trackbest[model] = data;
-    }
-    update_car_var (car_id, guid, username, model, res) {
-        this.cars[car_id] = {
-            guid: guid,
-            username: username,
-            model: model,
-            best: res.laptime
-        };
-    }
     update_car (username, guid, car_id, model) {
         httpRequest.post(`/username?guid=${guid}`, {username: username});
         if (this.trackbest[model] === undefined) {
             httpRequest.get(`/trackbest?track=${this.track}&model=${model}`, (res) => {
-                if (res.length > 0) this.update_trackbest_var(model, {guid: res.guid, username: res.username, laptime: res.laptime});
-            })
+                if (Object.keys(res).length > 0) this.trackbest[model] = {guid: res.guid, username: res.username, laptime: res.laptime};
+            });
         }
         httpRequest.get(`/personalbest?track=${this.track}&model=${model}&guid=${guid}`, (res) => {
-            this.update_car_var(car_id, guid, username, model, res);
+            this.cars[car_id] = {
+                guid: guid,
+                username: username,
+                model: model,
+                best: res.laptime
+            };
         });
     }
     update_trackbest (car_id, laptime) {
@@ -45,7 +38,7 @@ class Database {
             laptime: laptime,
             guid: car.guid
         };
-        httpRequest.post(`/trackbest?track=${this.track}&model=${model}&guid=${guid}`, {laptime: laptime});
+        httpRequest.post(`/trackbest?track=${this.track}&model=${car.model}`, {guid: car.guid, laptime: laptime});
     }
     update_personalbest (car_id, laptime) {
         const car = this.get_car(car_id);
@@ -56,7 +49,7 @@ class Database {
         return this.cars[String(car_id)];
     }
     get_personalbest (car_id) {
-        return this.get_car(car_id).best;
+        return this.get_car(car_id).best || 0;
     }
     get_trackbest (car_id) {
         return this.trackbest[this.get_car(car_id).model] || {guid: 0, username: '', laptime: 0};

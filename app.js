@@ -1,66 +1,77 @@
-const udp = require('dgram');
-const buffer = require('smart-buffer').SmartBuffer;
-const fs = require('fs');
+const server = require('acserver-plugin');
 const ini = require('ini');
-const tool = require('./tools');
-const listeners = require('./listeners');
-const protocols = require('./protocols');
-const db = new (require('./db')).DB();
+const fs = require('fs');
+const tools = require('./tools');
 
-const br = new tool.byteReader();
-const client = udp.createSocket('udp4');
+const db = new (require('./db')).DB()
+const app = new server.PluginApp();
+const protocols = server.PROTOCOLS;
+
 const server_cfg = ini.parse(fs.readFileSync('../server/cfg/server_cfg.ini', 'utf-8'));
 
 db.init(Number(server_cfg.SERVER.MAX_CLIENTS), server_cfg.SERVER.TRACK);
-listeners.init(db, client);
+console.log(db)
 
-var temp;
 
-client.on('message', (msg, info) => {
-    const buf = buffer.fromBuffer(msg);
-    const command = listeners.get(buf.readUInt8());
-    if (command === undefined) return;
-    // console.log(buf);
-    const query = command.query;
-    var data = [];
-    var save;
-    for (var q of query) {
-        save = true;
-        if (typeof q === 'string') {
-            q = [q, 1]
-        }
-        if (q[0][0] === 'B') {
-            save = false;
-        }
-        for (var i = 0; i < q[1]; i++) {
-            switch (save ? q[0] : q[0].slice(1)) {
-                case 'fle':
-                    temp = buf.readFloatLE();
-                    break;
-                case 'uint32':
-                    temp = buf.readUInt32LE();
-                    break;
-                case 'uint16':
-                    temp = buf.readUInt16();
-                    break;
-                case 'uint8':
-                    temp = buf.readUInt8();
-                    break;
-                case 'strw':
-                    temp = br.readStringW(buf);
-                    break;
-                case 'str':
-                    temp = br.readString(buf);
-                    break;
-            }
-            if (save) data.push(temp);
-        }
-    }
-    command.execute(data);
+app.on(protocols.NEW_CONNECTION, (data) => {
+    db.update_car(data.name, data.guid, data.car_id, data.model); 
 });
-client.bind(12001);
+app.on(protocols.CLIENT_LOADED, (data) => {
+    app.sendChat(data.car_id, 'Welcome!');
+    app.sendChat(data.car_id, `Your best laptime: ${tools.msToTime(db.get_personalbest(data.car_id))}`);
+    app.sendChat(data.car_id, 'Need help? Send !help');
+});
+app.on(protocols.CONNECTION_CLOSED, (data) => {
+    db.reset_car(data.car_id);
+});
+app.on(protocols.LAP_COMPLETED, (data) => {
+    console.log(data);
+    const personalBest = db.get_personalbest(data.car_id);
+    if (data.laptime > personalBest || personalBest === 0) {
+        app.sendChat(data.car_id, `You broke your best record!\n${tools.msToTime(data.laptime)}`);
+        db.update_personalbest(data.car_id, data.laptime);
+    }
+    const trackBest = db.get_trackbest(data.car_id);
+    if (data.laptime > trackBest.laptime || trackBest.laptime === 0) {
+        const car = db.get_car(data.car_id);
+        app.sendChat(data.car_id, `You are the fastest with ${car.model}!\n${tools.msToTime(data.laptime)}`);
+        app.broadcastChat(`${car.username} is the fastest with ${car.model}!\n${tools.msToTime(data.laptime)}`);
+        db.update_trackbest(data.car_id, data.laptime);
+    }
+});
 
-var packet = buffer.fromSize(3);
-packet.writeUInt8(protocols.GET_SESSION_INFO);
-packet.writeInt16LE(-1);
-client.send(packet.toBuffer(), 12000, '127.0.0.1');
+app.on(protocols.CHAT, (data) => {
+    app.listeners[protocols.LAP_COMPLETED]({car_id: 3, laptime: 200000})
+    if (data.message[0] !== '!') return;
+    const cmd = data.message.slice(1);
+    const car = db.get_car(data.car_id);
+    switch(cmd) {
+        case 'help':
+            app.sendChat(data.car_id, 'Commands: !help, !mybest, !trackbest');
+            break;
+        case 'mybest':
+            const personalbest = db.get_personalbest(data.car_id);
+            if (personalbest === 0) app.sendChat(data.car_id, `You haven't set your record yet with ${car.model}`);
+            else app.sendChat(data.car_id, `Your best laptime with ${car.model}: ${tools.msToTime(personalbest)}`);
+            break;
+        case 'trackbest':
+            const trackbest = db.get_trackbest(data.car_id);
+            if (trackbest === 0) app.sendChat(data.car_id, `Anyone hasn't set a record yet with ${car.model}`);
+            else app.sendChat(data.car_id, `Track best laptime with ${car.model}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`);
+            break;
+    }
+    
+});
+app.on(protocols.SESSION_INFO, (data) => {
+    db.set('server_name', data.server_name);
+    for (var i = 0; i < db.max_cars; i++) app.getCarInfo(i);
+});
+app.on(protocols.NEW_SESSION, app.listeners[String(protocols.SESSION_INFO)]);
+app.on(protocols.CAR_INFO, (data) => {
+    if (data.connected) db.update_car(data.name, data.guid, data.car_id, data.model);
+    console.log(data.car_id)
+});
+
+app.run();
+
+app.getSessionInfo(-1);
