@@ -10,7 +10,6 @@ const protocols = server.PROTOCOLS;
 const server_cfg = ini.parse(fs.readFileSync('../server/cfg/server_cfg.ini', 'utf-8'));
 
 db.init(Number(server_cfg.SERVER.MAX_CLIENTS), server_cfg.SERVER.TRACK);
-console.log(db)
 
 
 app.on(protocols.NEW_CONNECTION, (data) => {
@@ -25,7 +24,6 @@ app.on(protocols.CONNECTION_CLOSED, (data) => {
     db.reset_car(data.car_id);
 });
 app.on(protocols.LAP_COMPLETED, (data) => {
-    console.log(data);
     const personalBest = db.get_personalbest(data.car_id);
     if (data.laptime > personalBest || personalBest === 0) {
         app.sendChat(data.car_id, `You broke your best record!\n${tools.msToTime(data.laptime)}`);
@@ -69,7 +67,6 @@ app.on(protocols.SESSION_INFO, (data) => {
 app.on(protocols.NEW_SESSION, app.listeners[String(protocols.SESSION_INFO)]);
 app.on(protocols.CAR_INFO, (data) => {
     if (data.connected) db.update_car(data.name, data.guid, data.car_id, data.model);
-    console.log(data.car_id)
 });
 
 app.run();
