@@ -39,7 +39,6 @@ app.on(protocols.LAP_COMPLETED, (data) => {
 });
 
 app.on(protocols.CHAT, (data) => {
-    app.listeners[protocols.LAP_COMPLETED]({car_id: 3, laptime: 200000})
     if (data.message[0] !== '!') return;
     const cmd = data.message.slice(1);
     const car = db.get_car(data.car_id);
