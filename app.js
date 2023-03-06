@@ -13,7 +13,7 @@ db.init(Number(server_cfg.SERVER.MAX_CLIENTS), server_cfg.SERVER.TRACK);
 
 
 app.on(protocols.NEW_CONNECTION, (data) => {
-    db.update_car(data.name, data.guid, data.car_id, data.model); 
+    db.update_car(data.name, data.guid, data.car_id, db.carnames[data.model]); 
 });
 app.on(protocols.CLIENT_LOADED, (data) => {
     app.sendChat(data.car_id, 'Welcome!');
@@ -65,7 +65,8 @@ app.on(protocols.SESSION_INFO, (data) => {
 });
 app.on(protocols.NEW_SESSION, app.listeners[String(protocols.SESSION_INFO)]);
 app.on(protocols.CAR_INFO, (data) => {
-    if (data.connected) db.update_car(data.name, data.guid, data.car_id, data.model);
+    if (!Object.keys(db.carnames).includes(data.model)) db.carnames[data.model] = tools.getCarName(data.model);
+    if (data.connected) db.update_car(data.name, data.guid, data.car_id, db.carnames[data.model]);
 });
 
 app.run();

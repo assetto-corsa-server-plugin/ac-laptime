@@ -1,14 +1,16 @@
-const httpRequest = require('./tools').httpRequest;
+const tools = require('./tools');
+const httpRequest = tools.httpRequest;
 
 class Database {
     init (max_cars, track) {
-        this.track = track;
+        this.track = tools.getTrackName(track);
         this.max_cars = max_cars
         this.cars = {};
         for (var i = 0; i < max_cars; i++) {
             this.reset_car(i);
         }
         this.trackbest = {};
+        this.carnames = {};
     }
     set (key, value) {
         this[key] = value;
@@ -27,7 +29,7 @@ class Database {
             this.cars[car_id] = {
                 guid: guid,
                 username: username,
-                model: model,
+                model: this.carnames[model],
                 best: res.laptime
             };
         });

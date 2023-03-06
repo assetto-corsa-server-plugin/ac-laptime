@@ -17,17 +17,19 @@ module.exports = {
         number = String(number);
         return (number.length !== 0 ? '0'.repeat(Number(count) - number.length) : '') + number;
     },
-    getContents: function (type) {
-        const files = fs.readdirSync(config.contents[type]);
-        var data = {};
-        for (const file of files) {
-            try {
-                data[file] = JSON.parse(fs.readFileSync(path + '/' + file + `/ui/ui_${type}.json`, 'utf8')).name;
-            } catch {
-                data[file] = file[0].toUpperCase() + file.slice(1);
-            }
+    getCarName: function (car) {
+        try {
+            return JSON.parse(fs.readFileSync(config.contents.car + '/' + car + `/ui/ui_car.json`, 'utf8').replace(/[^ !-~]+/g,'').replace(/\s+/g, ' ')).name;
+        } catch {
+            return car
         }
-        return data;
+    },
+    getTrackName: function (track) {
+        try {
+            return JSON.parse(fs.readFileSync(config.contents.track + '/' + track + `/ui/ui_track.json`, 'utf8').replace(/[^ !-~]+/g,'').replace(/\s+/g, ' ')).name;
+        } catch {
+            return track
+        }
     },
     httpRequest: {
         post: (url, data) => {
