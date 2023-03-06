@@ -12,7 +12,7 @@ class Database {
         }
         this.trackbest = {};
         this.carnames = {};
-        httpRequest.post(`/trackname?name=${this.track}`, {trackname: this.trackname});
+        httpRequest.post(`/trackname?track=${this.track}`, {trackname: this.trackname});
     }
     set (key, value) {
         this[key] = value;
