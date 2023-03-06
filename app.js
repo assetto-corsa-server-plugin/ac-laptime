@@ -25,6 +25,7 @@ app.on(protocols.CONNECTION_CLOSED, (data) => {
     db.reset_car(data.car_id);
 });
 app.on(protocols.LAP_COMPLETED, (data) => {
+    if (data.cuts !== 0) return;
     const personalBest = db.get_personalbest(data.car_id);
     if (data.laptime > personalBest || personalBest === 0) {
         app.sendChat(data.car_id, `You broke your best record!\n${tools.msToTime(data.laptime)}`);
