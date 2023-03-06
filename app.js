@@ -68,7 +68,6 @@ app.on(protocols.CAR_INFO, (data) => {
     if (!Object.keys(db.carnames).includes(data.model)) db.carnames[data.model] = tools.getCarName(data.model);
     if (data.connected) db.update_car(data.name, data.guid, data.car_id, db.carnames[data.model]);
 });
+app.on(protocols.VERSION, (data) => app.getSessionInfo(-1));
 
 app.run();
-
-app.getSessionInfo(-1);
