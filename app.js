@@ -1,13 +1,14 @@
 const server = require('acserver-plugin');
 const ini = require('ini');
 const fs = require('fs');
+const config = require('./config');
 const tools = require('./tools');
 
 const db = new (require('./db')).DB()
 const app = new server.PluginApp();
 const protocols = server.PROTOCOLS;
 
-const server_cfg = ini.parse(fs.readFileSync('../server/cfg/server_cfg.ini', 'utf-8'));
+const server_cfg = ini.parse(fs.readFileSync(config.server_cfg, 'utf-8'));
 
 db.init(Number(server_cfg.SERVER.MAX_CLIENTS), server_cfg.SERVER.TRACK);
 
