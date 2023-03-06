@@ -14,7 +14,7 @@ db.init(Number(server_cfg.SERVER.MAX_CLIENTS), server_cfg.SERVER.TRACK);
 
 
 app.on(protocols.NEW_CONNECTION, (data) => {
-    db.update_car(data.name, data.guid, data.car_id, db.carnames[data.model]); 
+    db.update_car(data.name, data.guid, data.car_id, data.model); 
 });
 app.on(protocols.CLIENT_LOADED, (data) => {
     app.sendChat(data.car_id, 'Welcome!');
@@ -34,8 +34,8 @@ app.on(protocols.LAP_COMPLETED, (data) => {
     const trackBest = db.get_trackbest(data.car_id);
     if (data.laptime > trackBest.laptime || trackBest.laptime === 0) {
         const car = db.get_car(data.car_id);
-        app.sendChat(data.car_id, `You are the fastest with ${car.model}!\n${tools.msToTime(data.laptime)}`);
-        app.broadcastChat(`${car.username} is the fastest with ${car.model}!\n${tools.msToTime(data.laptime)}`);
+        app.sendChat(data.car_id, `You are the fastest with ${db.carnames[car.model]}!\n${tools.msToTime(data.laptime)}`);
+        app.broadcastChat(`${car.username} is the fastest with ${db.carnames[car.model]}!\n${tools.msToTime(data.laptime)}`);
         db.update_trackbest(data.car_id, data.laptime);
     }
 });
@@ -50,13 +50,13 @@ app.on(protocols.CHAT, (data) => {
             break;
         case 'mybest':
             const personalbest = db.get_personalbest(data.car_id);
-            if (personalbest === 0) app.sendChat(data.car_id, `You haven't set your record yet with ${car.model}`);
-            else app.sendChat(data.car_id, `Your best laptime with ${car.model}: ${tools.msToTime(personalbest)}`);
+            if (personalbest === 0) app.sendChat(data.car_id, `You haven't set your record yet with ${db.carnames[car.model]}`);
+            else app.sendChat(data.car_id, `Your best laptime with ${db.carnames[car.model]}: ${tools.msToTime(personalbest)}`);
             break;
         case 'trackbest':
             const trackbest = db.get_trackbest(data.car_id);
-            if (trackbest === 0) app.sendChat(data.car_id, `Anyone hasn't set a record yet with ${car.model}`);
-            else app.sendChat(data.car_id, `Track best laptime with ${car.model}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`);
+            if (trackbest === 0) app.sendChat(data.car_id, `Anyone hasn't set a record yet with ${db.carnames[car.model]}`);
+            else app.sendChat(data.car_id, `Track best laptime with ${db.carnames[car.model]}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`);
             break;
     }
     
@@ -68,7 +68,7 @@ app.on(protocols.SESSION_INFO, (data) => {
 app.on(protocols.NEW_SESSION, app.listeners[String(protocols.SESSION_INFO)]);
 app.on(protocols.CAR_INFO, (data) => {
     if (!Object.keys(db.carnames).includes(data.model)) db.carnames[data.model] = tools.getCarName(data.model);
-    if (data.connected) db.update_car(data.name, data.guid, data.car_id, db.carnames[data.model]);
+    if (data.connected) db.update_car(data.name, data.guid, data.car_id, data.model);
 });
 app.on(protocols.VERSION, (data) => app.getSessionInfo(-1));
 

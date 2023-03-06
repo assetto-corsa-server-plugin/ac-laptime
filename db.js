@@ -3,7 +3,8 @@ const httpRequest = tools.httpRequest;
 
 class Database {
     init (max_cars, track) {
-        this.track = tools.getTrackName(track);
+        this.track = track;
+        this.trackname = tools.getTrackName(track);
         this.max_cars = max_cars
         this.cars = {};
         for (var i = 0; i < max_cars; i++) {
@@ -11,6 +12,7 @@ class Database {
         }
         this.trackbest = {};
         this.carnames = {};
+        httpRequest.post(`/trackname?name=${this.track}`, {trackname: this.trackname});
     }
     set (key, value) {
         this[key] = value;
