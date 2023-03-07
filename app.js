@@ -18,7 +18,8 @@ app.on(protocols.NEW_CONNECTION, (data) => {
 });
 app.on(protocols.CLIENT_LOADED, (data) => {
     app.sendChat(data.car_id, 'Welcome!');
-    app.sendChat(data.car_id, `Your best laptime: ${tools.msToTime(db.get_personalbest(data.car_id))}`);
+    const personalBest = db.get_personalbest(data.car_id);
+    if (personalBest) app.sendChat(data.car_id, `Your best laptime: ${tools.msToTime(personalBest)}`);
     app.sendChat(data.car_id, 'Need help? Send !help');
 });
 app.on(protocols.CONNECTION_CLOSED, (data) => {
