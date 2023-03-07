@@ -66,5 +66,17 @@ module.exports = {
                 })
             });
         },
-    }
+    },
+    getContents: function (type) {
+        const files = fs.readdirSync(config.contents[type]);
+        var data = {};
+        for (const file of files) {
+            try {
+                data[file] = JSON.parse(fs.readFileSync(config.contents[type] + '/' + file + `/ui/ui_${type}.json`, 'utf8').replace(/[^ !-~]+/g,'').replace(/\s+/g, ' ')).name;
+            } catch {
+                data[file] = file[0].toUpperCase() + file.slice(1);
+            }
+        }
+        return data;
+    },
 }

@@ -12,7 +12,8 @@ class Database {
         }
         this.trackbest = {};
         this.carnames = {};
-        httpRequest.post(`/trackname?track=${this.track}`, {trackname: this.trackname});
+        httpRequest.post('/contents?type=car', tools.getContents('car'));
+        httpRequest.post('/contents?type=track', tools.getContents('track'));
     }
     set (key, value) {
         this[key] = value;
@@ -31,7 +32,7 @@ class Database {
             this.cars[car_id] = {
                 guid: guid,
                 username: username,
-                model: this.carnames[model],
+                model: model,
                 best: res.laptime
             };
         });
