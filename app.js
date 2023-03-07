@@ -56,7 +56,7 @@ app.on(protocols.CHAT, (data) => {
             break;
         case 'trackbest':
             const trackbest = db.get_trackbest(data.car_id);
-            if (trackbest === 0) app.sendChat(data.car_id, `Anyone hasn't set a record yet with ${db.carnames[car.model]}`);
+            if (trackbest.laptime === 0) app.sendChat(data.car_id, `Anyone hasn't set a record yet with ${db.carnames[car.model]}`);
             else app.sendChat(data.car_id, `Track best laptime with ${db.carnames[car.model]}: ${tools.msToTime(trackbest.laptime)} by ${trackbest.username}`);
             break;
     }
